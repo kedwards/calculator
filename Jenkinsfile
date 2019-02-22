@@ -26,8 +26,6 @@ pipeline {
         }
         stage('Test') { 
             steps {
-                sh "./gradlew jacocoTestReport"
-                sh "./gradlew jacocoTestCoverageVerification"
                 script {
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
@@ -52,6 +50,13 @@ pipeline {
                 echo 'Deploy Stage' 
             }
         }
+    }
+	post {
+		always {
+			mail to: 'kedwards@kevinedwards.ca',
+			subject: "Completed Pipeline: ${currentBuild.fullDisplayName}",
+			body: "Your build completed, please check: ${env.BUILD_URL}"
+		}
     }
 }
 
