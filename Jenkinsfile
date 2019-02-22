@@ -53,9 +53,7 @@ pipeline {
     }
 	post {
 		always {
-			mail to: 'kedwards@kevinedwards.ca',
-			subject: "Completed Pipeline: ${currentBuild.fullDisplayName}",
-			body: "Your build completed, please check: ${env.BUILD_URL}"
+			echo 'mail to somebody here'
 		}
     }
 }
