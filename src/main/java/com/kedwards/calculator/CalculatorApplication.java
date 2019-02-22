@@ -1,3 +1,6 @@
+/**
+ *  Main Spring Application.
+ */
 package com.kedwards.calculator;
 
 import org.springframework.boot.SpringApplication;
