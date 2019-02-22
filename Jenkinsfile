@@ -6,6 +6,11 @@ pipeline {
                 git url: 'https://github.com/kedwards/calculator.git'
             }
         }
+        stage("Compile") {
+            steps {
+                sh "./gradlew compileJava"
+            }
+        }
         stage('Build') { 
             steps {
                 echo 'Build Stage' 
