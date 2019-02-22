@@ -19,12 +19,6 @@ pipeline {
                 echo 'Test Stage' 
             }
             steps {
-                sh "./gradlew test jacocoTestCoverageVerification"
-            }
-            steps {
-                sh "./gradlew test jacocoTestReport"
-            }
-            steps {
                 script {
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
