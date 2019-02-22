@@ -8,17 +8,13 @@ pipeline {
         }
         stage("Compile") {
             steps {
-                echo 'Compile Stage' 
-            }
-            steps {
                 sh "./gradlew compileJava"
             }
         }
         stage('Test') { 
             steps {
-                echo 'Test Stage' 
-            }
-            steps {
+                sh "./gradlew jacocoTestReport"
+                sh "./gradlew jacocoTestCoverageVerification"
                 script {
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
@@ -30,7 +26,7 @@ pipeline {
         stage("Code coverage") {
             steps {
                 sh "./gradlew jacocoTestReport"
-                    publishHTML (target: [
+                publishHTML (target: [
                     reportDir: 'build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
                     reportName: "JaCoCo Report"
