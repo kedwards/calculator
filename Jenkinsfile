@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/kevinedwards/calculator.git'
+                git url: 'https://github.com/kedwards/calculator.git'
             }
         }
         stage('Build') { 
