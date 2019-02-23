@@ -2,6 +2,9 @@ package com.kedwards.calculator;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Main Test Application.
+ */
 public class CalculatorTest {
      private Calculator calculator = new Calculator();
 

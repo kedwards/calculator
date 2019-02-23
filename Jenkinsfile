@@ -45,6 +45,22 @@ pipeline {
                 sh "./gradlew jacocoTestCoverageVerification"
             }
         }
+		stage("Package") {
+			 steps {
+				  sh "./gradlew build"
+			 }
+		}
+
+		stage("Docker build") {
+			 steps {
+				  sh "docker build -t kevinedwards/calculator ."
+			 }
+		}
+		stage("Docker push") {
+			 steps {
+				  sh "docker push kevinedwards/calculator"
+			 }
+		}
         stage('Deploy') { 
             steps {
                 echo 'Deploy Stage' 
