@@ -1,11 +1,10 @@
 pipeline {
     agent any 
     environment {
-        registry = 'kevinedwards/calculator'
-        registryCredential = '83e59579-5712-456e-9e9e-7395ea744909'
+        DOCKER_HUB_CREDS = credentials('83e59579-5712-456e-9e9e-7395ea744909')
     }
     triggers {
-        pollSCM('H * * * *')
+        pollSCM(cron('H/15 * * * *')
     }
     stages {
         stage('Checkout') {
@@ -30,23 +29,19 @@ pipeline {
         }
         stage('Test') { 
             steps {
-                script {
-                    def browsers = ['chrome', 'firefox']
-                    for (int i = 0; i < browsers.size(); ++i) {
-                        echo 'Testing the ${browsers[i]} browser.'
-                    }
-                }
+                echo 'Unit tests ;-)'
+                sh './gradlew jacocoTest'
             }
         }
         stage('Code coverage') {
             steps {
+                sh './gradlew jacocoTestCoverageVerification'
                 sh './gradlew jacocoTestReport'
                 publishHTML (target: [
                     reportDir: 'build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
                     reportName: 'JaCoCo Report'
                 ])
-                sh './gradlew jacocoTestCoverageVerification'
             }
         }
         stage('Package') {
@@ -56,17 +51,14 @@ pipeline {
         }
         stage('Docker build') {
             steps {
-                script {
-                    dockerImage = docker.build registry + ':$BUILD_NUMBER'
-                }
+                app = docker.build('kevinedwards/calculator')
             }
         }
         stage('Docker push') {
             steps {
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
-                    }
+                docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIALS}") {
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
                 }
             }
         }
