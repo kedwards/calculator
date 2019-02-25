@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     environment {
-        refistry = 'kevinedwards/calculator'
+        registry = 'kevinedwards/calculator'
         registryCredential = '83e59579-5712-456e-9e9e-7395ea744909'
     }
     triggers {
