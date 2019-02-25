@@ -1,7 +1,11 @@
 pipeline {
     agent any 
+    environment {
+        refistry = 'kevinedwards/calculator'
+        registryCredential = ‘83e59579-5712-456e-9e9e-7395ea744909’
+    }
     triggers {
-        pollSCM('* * * * *')
+        pollSCM('H * * * *')
     }
     stages {
         stage('Checkout') {
@@ -9,19 +13,19 @@ pipeline {
                 git url: 'https://github.com/kedwards/calculator.git'
             }
         }
-        stage("Static code analysis") {
+        stage('Static code analysis') {
             steps {
-                sh "./gradlew checkstyleMain"
+                sh './gradlew checkstyleMain'
                 publishHTML (target: [
                     reportDir: 'build/reports/checkstyle/',
                     reportFiles: 'main.html',
-                    reportName: "Checkstyle Report"
+                    reportName: 'Checkstyle Report'
                 ])
             }
         }
-        stage("Compile") {
+        stage('Compile') {
             steps {
-                sh "./gradlew compileJava"
+                sh './gradlew compileJava'
             }
         }
         stage('Test') { 
@@ -29,48 +33,53 @@ pipeline {
                 script {
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
-                        echo "Testing the ${browsers[i]} browser."
+                        echo 'Testing the ${browsers[i]} browser.'
                     }
                 }
             }
         }
-        stage("Code coverage") {
+        stage('Code coverage') {
             steps {
-                sh "./gradlew jacocoTestReport"
+                sh './gradlew jacocoTestReport'
                 publishHTML (target: [
                     reportDir: 'build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
-                    reportName: "JaCoCo Report"
+                    reportName: 'JaCoCo Report'
                 ])
-                sh "./gradlew jacocoTestCoverageVerification"
+                sh './gradlew jacocoTestCoverageVerification'
             }
         }
-		stage("Package") {
-			 steps {
-				  sh "./gradlew build"
-			 }
-		}
-
-		stage("Docker build") {
-			 steps {
-				  sh "docker build -t kevinedwards/calculator ."
-			 }
-		}
-		stage("Docker push") {
-			 steps {
-				  sh "docker push kevinedwards/calculator"
-			 }
-		}
+        stage('Package') {
+            steps {
+                sh './gradlew build'
+            }
+        }
+        stage('Docker build') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ':$BUILD_NUMBER'
+                }
+            }
+        }
+        stage('Docker push') {
+            steps {
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
         stage('Deploy') { 
             steps {
                 echo 'Deploy Stage' 
             }
         }
-    }
-	post {
-		always {
-			echo 'mail to somebody here'
-		}
+    }   
+    post {
+        always {
+            echo 'mail to somebody here'
+        }
     }
 }
 
