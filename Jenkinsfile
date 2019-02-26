@@ -51,14 +51,18 @@ pipeline {
         }
         stage('Docker build') {
             steps {
-                app = docker.build('kevinedwards/calculator')
+                script {
+                    app = docker.build('kevinedwards/calculator')
+                }
             }
         }
         stage('Docker push') {
             steps {
-                docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIALS}") {
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIALS}") {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
                 }
             }
         }
