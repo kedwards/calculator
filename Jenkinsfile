@@ -65,6 +65,7 @@ pipeline {
         }
         stage("Deploy to staging") {
             steps {
+                echo 'see Acceptance test'
                 //sh "docker container run -itd --rm -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 //sh 'docker-compose up -d'
             }
