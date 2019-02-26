@@ -76,7 +76,7 @@ pipeline {
     }   
     post {
         always {
-            sh: "docker container stop ${CONTAINER_NAME}"
+            sh "docker container stop ${CONTAINER_NAME}"
         }
     }
 }
