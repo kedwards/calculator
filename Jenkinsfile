@@ -53,7 +53,7 @@ pipeline {
         stage('Docker push') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIALS}") {
+                    docker.withRegistry('https://registry.hub.docker.com', '83e59579-5712-456e-9e9e-7395ea744909') {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
