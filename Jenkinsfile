@@ -2,6 +2,7 @@ pipeline {
     agent any 
     environment {
         DOCKER_IMAGE = 'kevinedwards/calculator'
+        GITHUB_IMAGE = 'kedwards/calculator'
         CONTAINER_NAME = 'calculator'
         DOCKER_HUB_CREDENTIAL_ID = '83e59579-5712-456e-9e9e-7395ea744909'
     }
@@ -11,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/kedwards/calculator.git'
+                git url: "https://github.com/${GITHUB_IMAGE}"
             }
         }
         stage('Static code analysis') {
@@ -48,14 +49,14 @@ pipeline {
         stage('Docker build') {
             steps {
                 script {
-                    app = docker.build(${env.DOCKER_IMAGE})
+                    app = docker.build("${DOCKER_IMAGE}")
                 }
             }
         }
         stage('Docker push') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', ${DOCKER_HUB_CREDENTIAL_ID}) {
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
