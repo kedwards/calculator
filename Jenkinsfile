@@ -2,6 +2,7 @@ pipeline {
     agent any 
     environment {
         DOCKER_IMAGE = 'kevinedwards/calculator'
+        CONTAINER_NAME = 'calculator'
         DOCKER_HUB_CREDENTIAL_ID = '83e59579-5712-456e-9e9e-7395ea744909'
     }
     triggers {
@@ -47,14 +48,14 @@ pipeline {
         stage('Docker build') {
             steps {
                 script {
-                    app = docker.build("${env.DOCKER_IMAGE}")
+                    app = docker.build(${env.DOCKER_IMAGE})
                 }
             }
         }
         stage('Docker push') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIAL_ID}") {
+                    docker.withRegistry('https://registry.hub.docker.com', ${DOCKER_HUB_CREDENTIAL_ID}) {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
@@ -63,13 +64,19 @@ pipeline {
         }
         stage("Deploy to staging") {
             steps {
-                sh 'docker container run -itd --rm -p 8765:8080 --name calculator "${env.DOCKER_IMAGE}"'
+                sh "docker container run -itd --rm -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+            }
+        }
+        stage("Acceptance test") {
+            steps {
+                sleep 60
+                sh './acceptance_test.sh'
             }
         }
     }   
     post {
         always {
-            echo 'mail to somebody here'
+            sh: "docker container stop ${CONTAINER_NAME}"
         }
     }
 }
