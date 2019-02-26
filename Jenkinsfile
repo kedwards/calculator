@@ -1,7 +1,8 @@
 pipeline {
     agent any 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('83e59579-5712-456e-9e9e-7395ea744909')
+        DOCKER_IMAGE = 'kevinedwards/calculator'
+        DOCKER_HUB_CREDENTIAL_ID = '83e59579-5712-456e-9e9e-7395ea744909'
     }
     triggers {
         pollSCM('H/15 * * * *')
@@ -46,23 +47,23 @@ pipeline {
         stage('Docker build') {
             steps {
                 script {
-                    app = docker.build('kevinedwards/calculator')
+                    app = docker.build("${env.DOCKER_IMAGE}")
                 }
             }
         }
         stage('Docker push') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', '83e59579-5712-456e-9e9e-7395ea744909') {
+                    docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIAL_ID}") {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
                 }
             }
         }
-        stage('Deploy') { 
+        stage("Deploy to staging") {
             steps {
-                echo 'Deploy Stage' 
+                sh 'docker container run -itd --rm -p 8765:8080 --name calculator "${env.DOCKER_IMAGE}"'
             }
         }
     }   
