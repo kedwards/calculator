@@ -4,7 +4,7 @@ pipeline {
         DOCKER_HUB_CREDS = credentials('83e59579-5712-456e-9e9e-7395ea744909')
     }
     triggers {
-        pollSCM(cron('H/15 * * * *'))
+        pollSCM('H/15 * * * *')
     }
     stages {
         stage('Checkout') {
