@@ -65,19 +65,25 @@ pipeline {
         }
         stage("Deploy to staging") {
             steps {
-                sh "docker container run -itd --rm -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                //sh "docker container run -itd --rm -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                //sh 'docker-compose up -d'
             }
         }
-        stage("Acceptance test") {
-            steps {
-                sleep 60
-                sh './acceptance_test.sh'
-            }
-        }
+		stage("Acceptance test") {
+			steps {
+				sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+				sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+				sh 'test $(docker wait acceptance_test_1) -eq 0'
+                //sleep 60
+                //sh './acceptance_test.sh'
+			}
+		}
     }   
     post {
         always {
-            sh "docker container stop ${CONTAINER_NAME}"
+            //sh "docker container stop ${CONTAINER_NAME}"
+            //sh 'docker-compose down'
+			sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
         }
     }
 }
