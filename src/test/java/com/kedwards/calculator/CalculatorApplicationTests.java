@@ -12,8 +12,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class CalculatorApplicationTests {
 
-	@Test
-	public void contextLoads() {
-	}
 
 }
