@@ -47,15 +47,15 @@ pipeline {
         stage('Package') {
             steps {
                 echo 'Package'
-            //     sh './gradlew build'
+                sh './gradlew build'
             }
         }
         stage('Docker build') {
             steps {
                 echo 'Docker build'
-                // script {
-                //     app = docker.build("${DOCKER_IMAGE}")
-                // }
+                script {
+                    app = docker.build("${DOCKER_IMAGE}")
+                }
             }
         }
         stage('Docker push') {
