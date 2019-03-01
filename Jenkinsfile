@@ -7,7 +7,7 @@ pipeline {
         DOCKER_HUB_CREDENTIAL_ID = '83e59579-5712-456e-9e9e-7395ea744909'
     }
     triggers {
-        pollSCM('H/15 * * * *')
+        pollSCM('H/30 * * * *')
     }
     stages {
         stage('Checkout') {
@@ -72,9 +72,9 @@ pipeline {
         }
 		stage("Acceptance test") {
 			steps {
-				sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-				sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
-				sh 'test $(docker wait acceptance_test_1) -eq 0'
+				// sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+				// sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+				// sh 'test $(docker wait acceptance_test_1) -eq 0'
                 //sleep 60
                 //sh './acceptance_test.sh'
 			}
@@ -84,7 +84,7 @@ pipeline {
         always {
             //sh "docker container stop ${CONTAINER_NAME}"
             //sh 'docker-compose down'
-			sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
+			//sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
         }
     }
 }
