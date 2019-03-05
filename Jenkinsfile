@@ -1,5 +1,5 @@
 pipeline {
-    agent any 
+    agent { label 'java' }
     environment {
         DOCKER_IMAGE = 'kevinedwards/calculator'
         GITHUB_IMAGE = 'kedwards/calculator'
