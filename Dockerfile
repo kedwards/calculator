@@ -14,5 +14,4 @@ EXPOSE 22
 
 CMD ["/usr/sbin/sshd", "-D"]
 
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
