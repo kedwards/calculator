@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'java' }
+    agent { label 'evarga' }
     environment {
         DOCKER_IMAGE = 'kevinedwards/calculator'
         GITHUB_IMAGE = 'kedwards/calculator'
