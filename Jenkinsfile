@@ -99,10 +99,14 @@ pipeline {
     post {
         always {
             echo 'Always send this message'
-            sh "docker stop ${CONTAINER_NAME}"
-            sh 'docker-compose down'
-			// sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
-        }
+            script {
+                docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                    sh "docker stop ${CONTAINER_NAME}"
+                    sh 'docker-compose down'
+			        // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
+                } 
+            }
+        }     
     }
 }
 
