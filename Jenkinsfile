@@ -54,7 +54,7 @@ pipeline {
         stage('Docker build') {
             steps {
                 echo 'Docker build'
-                docker build -t ${DOCKER_IMAGE} --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem 
+                sh 'docker build -t ${DOCKER_IMAGE} --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem'
                 // script {
                 //     app = docker.build("${DOCKER_IMAGE}") 
                 // }
