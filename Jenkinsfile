@@ -60,6 +60,8 @@ pipeline {
                         sh """
                             docker login -u kevinedwards -p Y2tFT9n*xEqb
                         """
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
                     }
                 }
             }
