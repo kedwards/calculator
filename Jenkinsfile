@@ -54,10 +54,9 @@ pipeline {
         stage('Docker build') {
             steps {
                 echo 'Docker build'
-                sh 'docker build -t ${DOCKER_IMAGE} --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem'
-                // script {
-                //     app = docker.build("${DOCKER_IMAGE}") 
-                // }
+                script {
+                    app = docker.build("${DOCKER_IMAGE}") 
+                }
             }
         }
         stage('Docker push') {
