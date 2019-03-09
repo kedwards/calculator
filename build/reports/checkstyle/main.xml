@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="6.19">
-<file name="/home/kedwards/Dev/calculator/src/main/java/com/kedwards/calculator/Calculator.java">
-</file>
-<file name="/home/kedwards/Dev/calculator/src/main/java/com/kedwards/calculator/CalculatorApplication.java">
-</file>
-<file name="/home/kedwards/Dev/calculator/src/main/java/com/kedwards/calculator/CalculatorController.java">
-</file>
-</checkstyle>
