@@ -16,35 +16,35 @@ pipeline {
                 git url: "https://github.com/${GITHUB_IMAGE}"
             }
         }
-        stage('Static code analysis') {
-            steps {
-                echo 'Static code analysis'
-                sh './gradlew checkstyleMain'
-                publishHTML (target: [
-                    reportDir: 'build/reports/checkstyle/',
-                    reportFiles: 'main.html',
-                    reportName: 'Checkstyle Report'
-                ])
-            }
-        }
-        stage('Compile') {
-            steps {
-                echo 'Compile'
-                sh './gradlew compileJava'
-            }
-        }
-        stage('Code coverage') {
-            steps {
-                echo 'Code coverage'
-                sh './gradlew jacocoTestCoverageVerification'
-                publishHTML (target: [
-                    reportDir: 'build/reports/jacoco/test/html',
-                    reportFiles: 'index.html',
-                    reportName: 'JaCoCo Report'
-                ])
-                sh './gradlew jacocoTestReport'
-            }
-        }
+        // stage('Static code analysis') {
+        //     steps {
+        //         echo 'Static code analysis'
+        //         sh './gradlew checkstyleMain'
+        //         publishHTML (target: [
+        //             reportDir: 'build/reports/checkstyle/',
+        //             reportFiles: 'main.html',
+        //             reportName: 'Checkstyle Report'
+        //         ])
+        //     }
+        // }
+        // stage('Compile') {
+        //     steps {
+        //         echo 'Compile'
+        //         sh './gradlew compileJava'
+        //     }
+        // }
+        // stage('Code coverage') {
+        //     steps {
+        //         echo 'Code coverage'
+        //         sh './gradlew jacocoTestCoverageVerification'
+        //         publishHTML (target: [
+        //             reportDir: 'build/reports/jacoco/test/html',
+        //             reportFiles: 'index.html',
+        //             reportName: 'JaCoCo Report'
+        //         ])
+        //         sh './gradlew jacocoTestReport'
+        //     }
+        // }
         stage('Package') {
             steps {
                 echo 'Package'
