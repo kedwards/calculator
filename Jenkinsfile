@@ -57,6 +57,9 @@ pipeline {
                 script {
                     docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         app = docker.build("${DOCKER_IMAGE}") 
+                        sh """
+                            docker login -u kevinedwards -p Y2tFT9n*xEqb
+                        """
                     }
                 }
             }
@@ -64,9 +67,9 @@ pipeline {
         stage('Docker push') {
             steps {
                 echo 'Docker Publish'
-                sh """
-                    docker login -u kevinedwards -p Y2tFT9n*xEqb
-                """
+                // sh """
+                //     docker login -u kevinedwards -p Y2tFT9n*xEqb
+                // """
                 // script {
                 //     docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
                 //         app.push("${env.BUILD_NUMBER}")
