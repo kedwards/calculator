@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'evarga' }
+    agent { label 'latest' }
     environment {
         DOCKER_IMAGE = 'kevinedwards/calculator'
         GITHUB_IMAGE = 'kedwards/calculator'
@@ -54,47 +54,47 @@ pipeline {
         stage('Docker build') {
             steps {
                 echo 'Docker build'
-                // script {
-                //     app = docker.build("${DOCKER_IMAGE}")
-                // }
+                script {
+                    app = docker.build("${DOCKER_IMAGE}")
+                }
             }
         }
-        stage('Docker push') {
-            steps {
-                echo 'Docker Publish'
-                // script {
-                //     docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
-                //         app.push("${env.BUILD_NUMBER}")
-                //         app.push("latest")
-                //     }
-                // }
-            }
-        }
-        stage('Deploy to staging') {
-            steps {
-                echo 'Deploy to staging'
-                //sh "docker container run -itd --rm -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
-                //sh 'docker-compose up -d'
-            }
-        }
-		stage('Acceptance test') {
-			steps {
-				echo 'Acceptance test'
-                // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-				// sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
-				// sh 'test $(docker wait acceptance_test_1) -eq 0'
-                //sleep 60
-                //sh './acceptance_test.sh'
-			}
-		}
+        // stage('Docker push') {
+        //     steps {
+        //         echo 'Docker Publish'
+        //         script {
+        //             docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
+        //                 app.push("${env.BUILD_NUMBER}")
+        //                 app.push("latest")
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Deploy to staging') {
+        //     steps {
+        //         echo 'Deploy to staging'
+        //         sh "docker container run -itd --rm -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+        //         sh 'docker-compose up -d'
+        //     }
+        // }
+		// stage('Acceptance test') {
+		// 	steps {
+		// 		echo 'Acceptance test'
+        //         sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+		// 		sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+		// 		sh 'test $(docker wait acceptance_test_1) -eq 0'
+        //         sleep 60
+        //         sh './acceptance_test.sh'
+		// 	}
+		// }
     }   
-    post {
-        always {
-            echo 'Always send this message'
-            //sh "docker container stop ${CONTAINER_NAME}"
-            //sh 'docker-compose down'
-			//sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
-        }
-    }
+    // post {
+    //     always {
+    //         echo 'Always send this message'
+    //         sh "docker container stop ${CONTAINER_NAME}"
+    //         sh 'docker-compose down'
+	// 		sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
+    //     }
+    // }
 }
 
