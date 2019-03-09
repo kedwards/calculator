@@ -54,6 +54,9 @@ pipeline {
         stage('Docker build') {
             steps {
                 echo 'Docker build'
+                sh 'export DOCKER_HOST=tcp://35.182.66.188:2376'
+                sh 'export DOCKER_TLS_VERIFY=1'
+                sh 'export DOCKER_CERT_PATH=./secrets'
                 script {
                     app = docker.build("${DOCKER_IMAGE}") 
                 }
