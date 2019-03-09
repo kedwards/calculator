@@ -4,7 +4,7 @@ pipeline {
         DOCKER_IMAGE = 'kevinedwards/calculator'
         GITHUB_IMAGE = 'kedwards/calculator'
         CONTAINER_NAME = 'calculator'
-        DOCKER_HUB_CREDENTIAL_ID = '83e59579-5712-456e-9e9e-7395ea744909'
+        DOCKER_HUB_CREDENTIAL_ID = 'dockerhub-auth'
     }
     triggers {
         pollSCM('H/30 * * * *')
@@ -54,22 +54,23 @@ pipeline {
         stage('Docker build') {
             steps {
                 echo 'Docker build'
+                docker build -t ${DOCKER_IMAGE} --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem 
+                // script {
+                //     app = docker.build("${DOCKER_IMAGE}") 
+                // }
+            }
+        }
+        stage('Docker push') {
+            steps {
+                echo 'Docker Publish'
                 script {
-                    app = docker.build("${DOCKER_IMAGE}")
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
                 }
             }
         }
-        // stage('Docker push') {
-        //     steps {
-        //         echo 'Docker Publish'
-        //         script {
-        //             docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
-        //                 app.push("${env.BUILD_NUMBER}")
-        //                 app.push("latest")
-        //             }
-        //         }
-        //     }
-        // }
         // stage('Deploy to staging') {
         //     steps {
         //         echo 'Deploy to staging'
