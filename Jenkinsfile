@@ -57,8 +57,10 @@ pipeline {
                 // sh """
                 //     DOCKER_HOST=tcp://35.182.66.188:2376 DOCKER_TLS_VERIFY=1 DOCKER_CERT_PATH=./secrets docker build -t ${DOCKER_IMAGE} .
                 // """
-                docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                    app = docker.build("${DOCKER_IMAGE}") 
+                script {
+                    docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        app = docker.build("${DOCKER_IMAGE}") 
+                    }
                 }
             }
         }
