@@ -4,7 +4,7 @@ pipeline {
         DOCKER_IMAGE = 'kevinedwards/calculator'
         GITHUB_IMAGE = 'kedwards/calculator'
         CONTAINER_NAME = 'calculator'
-        DOCKER_HUB_CREDENTIAL_ID = 'dockerhub-auth'
+        DOCKER_HUB_CREDENTIAL_ID = '015cdcef-f928-4288-9ccd-7f91f75d2178'
     }
     triggers {
         pollSCM('H/30 * * * *')
@@ -54,9 +54,6 @@ pipeline {
         stage('Docker build') {
             steps {
                 echo 'Docker build'
-                // sh """
-                //     DOCKER_HOST=tcp://35.182.66.188:2376 DOCKER_TLS_VERIFY=1 DOCKER_CERT_PATH=./secrets docker build -t ${DOCKER_IMAGE} .
-                // """
                 script {
                     docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         app = docker.build("${DOCKER_IMAGE}") 
@@ -67,14 +64,6 @@ pipeline {
         stage('Docker push') {
             steps {
                 echo 'Docker Publish'
-                // withCredentials([usernamePassword( credentialsId: "${DOCKER_HUB_CREDENTIAL_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                //     docker.withRegistry('', 'docker-hub-credentials') {
-                //         sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-                //         myImage.push("${env.BUILD_NUMBER}")
-                //         myImage.push("latest")
-                //     }
-                // }
-
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
                         app.push("${env.BUILD_NUMBER}")
