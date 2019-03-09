@@ -96,13 +96,13 @@ pipeline {
 		// 	}
 		// }
     }   
-    // post {
-    //     always {
-    //         echo 'Always send this message'
-    //         sh "docker container stop ${CONTAINER_NAME}"
-    //         sh 'docker-compose down'
-	// 		sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
-    //     }
-    // }
+    post {
+        always {
+            echo 'Always send this message'
+            sh "docker container stop ${CONTAINER_NAME}"
+            // sh 'docker-compose down'
+			// sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
+        }
+    }
 }
 
