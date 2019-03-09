@@ -77,9 +77,11 @@ pipeline {
         stage('Deploy to staging') {
             steps {
                 echo 'Deploy to staging'
-                docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                    sh "docker run -itd -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
-                    sh 'docker-compose up -d'
+                script {
+                    docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        sh "docker run -itd -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                        sh 'docker-compose up -d'
+                    }
                 }
             }
         }
