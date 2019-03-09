@@ -64,11 +64,12 @@ pipeline {
         stage('Docker push') {
             steps {
                 echo 'Docker Publish'
+                sh 'docker login -u kevinedwards -p Y2tFT9n*xEqb'
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
+                    // docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
-                    }
+                    // }
                 }
             }
         }
