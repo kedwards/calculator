@@ -108,10 +108,12 @@ pipeline {
             echo 'Always send this message'
             script {
                 docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                    // 1. Jenkins first, black box
                     // sh "docker rm -f ${CONTAINER_NAME}"
-                    // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
                     // 2. Jenkins first, docker-compose black box
                     sh 'docker-compose down'
+                    // 3.
+                    // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
                 } 
             }
         }     
