@@ -17,35 +17,35 @@ pipeline {
                 git url: "https://github.com/${GITHUB_IMAGE}"
             }
         }
-        // stage('Static code analysis') {
-        //     steps {
-        //         echo 'Static code analysis'
-        //         sh './gradlew checkstyleMain'
-        //         publishHTML (target: [
-        //             reportDir: 'build/reports/checkstyle/',
-        //             reportFiles: 'main.html',
-        //             reportName: 'Checkstyle Report'
-        //         ])
-        //     }
-        // }
-        // stage('Compile') {
-        //     steps {
-        //         echo 'Compile'
-        //         sh './gradlew compileJava'
-        //     }
-        // }
-        // stage('Code coverage') {
-        //     steps {
-        //         echo 'Code coverage'
-        //         sh './gradlew jacocoTestReport'
-        //         publishHTML (target: [
-        //             reportDir: 'build/reports/jacoco/test/html',
-        //             reportFiles: 'index.html',
-        //             reportName: 'JaCoCo Report'
-        //         ])
-        //         sh './gradlew jacocoTestCoverageVerification'
-        //     }
-        // }
+        stage('Static code analysis') {
+            steps {
+                echo 'Static code analysis'
+                sh './gradlew checkstyleMain'
+                publishHTML (target: [
+                    reportDir: 'build/reports/checkstyle/',
+                    reportFiles: 'main.html',
+                    reportName: 'Checkstyle Report'
+                ])
+            }
+        }
+        stage('Compile') {
+            steps {
+                echo 'Compile'
+                sh './gradlew compileJava'
+            }
+        }
+        stage('Code coverage') {
+            steps {
+                echo 'Code coverage'
+                sh './gradlew jacocoTestReport'
+                publishHTML (target: [
+                    reportDir: 'build/reports/jacoco/test/html',
+                    reportFiles: 'index.html',
+                    reportName: 'JaCoCo Report'
+                ])
+                sh './gradlew jacocoTestCoverageVerification'
+            }
+        }
         stage('Package') {
             steps {
                 echo 'Package'
@@ -81,7 +81,7 @@ pipeline {
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        sh "docker-compose -f docker-compose.yml -p acceptance up -d"
+                        sh "docker-compose -f docker-compose.yml -p acceptance up -d"    
                     }
                 }
             }
@@ -89,22 +89,22 @@ pipeline {
 		stage('Acceptance test') {
 			steps {
 				echo 'Acceptance test'
-                // script {
-                //     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                //         sh 'test $(docker wait acceptance_test_1) -eq 0'                        
-                //     }
-                // }
+                script {
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        sh 'test $(docker wait acceptance_test_1) -eq 0'                        
+                    }
+                }
 			}
 		}
     }   
     post {
         always {
             echo 'Always send this message'
-            // script {
-            //     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-            //         sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
-            //     } 
-            // }
+            script {
+                docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                    sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
+                } 
+            }
         }     
     }
 }

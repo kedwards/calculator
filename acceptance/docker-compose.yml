@@ -2,7 +2,3 @@ version: "3"
 services:
     test:
         build: ./acceptance
-        networks:
-            - acceptance_calculator
-networks:
-    acceptance_calculator:
