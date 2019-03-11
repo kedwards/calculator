@@ -80,7 +80,7 @@ pipeline {
                 echo 'Deploy to staging'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        sh "docker run -p 8765:8080 --rm --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                        sh "docker run -d -p 8765:8080 --rm --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                         // sh 'docker-compose up -d'
                     }
                 }
