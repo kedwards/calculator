@@ -94,7 +94,7 @@ pipeline {
                         sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
                         sh "docker-compose -f docker-compose.yml -p acceptance up -d"
                         // sh 'test $(docker wait acceptance_test_1) -eq 0'
-                        sh 'docker container run -itd --network=acceptance_calculator test'
+                        sh 'docker run -itd --network=acceptance_calculator test'
                     }
                 }
 			}
