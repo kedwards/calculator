@@ -97,9 +97,7 @@ pipeline {
                         sleep 10
                         // sh './acceptance_test.sh'
                         // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance up -d --build'
-                        sh: """
-                            test \$(curl -s localhost:8080/sum?a=1\\&b=2) -eq 9
-                        """
+                        sh: 'test \$(curl -s localhost:8080/sum?a=1\\&b=2) -eq 3'
                     }
                 }
 			}
