@@ -75,15 +75,13 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to staging') {
+        stage('Deploy to test') {
             steps {
-                echo 'Deploy to staging'
+                echo 'Deploy to test'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        // 1. Jenkins first black box
-                        // sh "docker run -d -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
-                        // 2. Jenkins first, docker-compose black box
-                        sh 'docker-compose up -d'
+                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+                        sh "docker-compose -f docker-compose.yml -p acceptance up -d"
                     }
                 }
             }
@@ -93,11 +91,7 @@ pipeline {
 				echo 'Acceptance test'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        // sh "docker-compose -f docker-compose.yml -p acceptance up -d"
-                        // sh 'test $(docker wait acceptance_test_1) -eq 0'
-                        // sh 'docker run -itd --network=acceptance_calculator test'
-                        sh './acceptance_test.sh'
+                        sh 'test $(docker wait acceptance_test_1) -eq 0'                        
                     }
                 }
 			}
@@ -108,12 +102,7 @@ pipeline {
             echo 'Always send this message'
             script {
                 docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                    // 1. Jenkins first, black box
-                    // sh "docker rm -f ${CONTAINER_NAME}"
-                    // 2. Jenkins first, docker-compose black box
-                    sh 'docker-compose down'
-                    // 3.
-                    // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
+                    sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
                 } 
             }
         }     
