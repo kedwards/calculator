@@ -110,7 +110,7 @@ pipeline {
                 docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                     // sh "docker rm -f ${CONTAINER_NAME}"
                     // sh 'docker-compose down'
-			        sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
+			        // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
                 } 
             }
         }     
