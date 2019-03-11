@@ -94,8 +94,8 @@ pipeline {
                         // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
                         // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
                         // sh 'test $(docker wait acceptance_test_1) -eq 0'
-                        sleep 10
-                        sh './acceptance_test.sh'
+                        // sleep 10
+                        // sh './acceptance_test.sh'
                         // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance up -d --build'
                         // sh: "test \$(curl -s localhost:8080/sum?a=1\\&b=2) -eq 3"
                     }
@@ -109,7 +109,7 @@ pipeline {
             script {
                 docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                     // sh "docker rm -f ${CONTAINER_NAME}"
-                    sh 'docker-compose down'
+                    // sh 'docker-compose down'
 			        // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
                 } 
             }
