@@ -95,7 +95,7 @@ pipeline {
                         // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
                         // sh 'test $(docker wait acceptance_test_1) -eq 0'
                         sleep 10
-                        sh '/bin/bash acceptance_test.sh'
+                        sh './acceptance_test.sh'
                     }
                 }
 			}
