@@ -2,9 +2,9 @@ version: "3"
 services:
     calculator:
         build: .
+        networks:
+          - calculator
         ports:
             - "8080:8080"
     redis:
         image: redis:latest
-    # test:
-    #     build: ./acceptance
