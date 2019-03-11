@@ -2,7 +2,7 @@
 
 VAL=$(curl -s localhost:8765/sum?a=1\&b=2)
 
-if [ ${VAL} -eq 3 ]
+if [ ${VAL} == 3 ]
 then
     exit 0
 else
