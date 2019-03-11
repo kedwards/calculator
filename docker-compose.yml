@@ -3,6 +3,8 @@ services:
     calculator:
         build: .
         ports:
-            - 8080
+            - "8080:8080"
     redis:
         image: redis:latest
+    # test:
+    #     build: ./acceptance

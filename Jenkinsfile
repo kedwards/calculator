@@ -46,56 +46,56 @@ pipeline {
         //         sh './gradlew jacocoTestCoverageVerification'
         //     }
         // }
-        stage('Package') {
-            steps {
-                echo 'Package'
-                sh './gradlew build'
-            }
-        }
-        stage('Docker build') {
-            steps {
-                echo 'Docker build'
-                script {
-                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        app = docker.build("${DOCKER_IMAGE}") 
-                    }
-                }
-            }
-        }
-        stage('Docker push') {
-            steps {
-                echo 'Docker Publish'
-                script {
-                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
-                            app.push("${env.BUILD_NUMBER}")
-                            app.push("latest")
-                        }
-                    }
-                }
-            }
-        }
-        // stage('Deploy to staging') {
+        // stage('Package') {
         //     steps {
-        //         echo 'Deploy to staging'
+        //         echo 'Package'
+        //         sh './gradlew build'
+        //     }
+        // }
+        // stage('Docker build') {
+        //     steps {
+        //         echo 'Docker build'
         //         script {
         //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-        //                 // sh "docker run -d -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
-        //                 sh 'docker-compose up -d'
+        //                 app = docker.build("${DOCKER_IMAGE}") 
         //             }
         //         }
         //     }
         // }
+        // stage('Docker push') {
+        //     steps {
+        //         echo 'Docker Publish'
+        //         script {
+        //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+        //                 docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
+        //                     app.push("${env.BUILD_NUMBER}")
+        //                     app.push("latest")
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Deploy to staging') {
+            steps {
+                echo 'Deploy to staging'
+                script {
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        // sh "docker run -d -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                        sh 'docker-compose up -d'
+                    }
+                }
+            }
+        }
 		stage('Acceptance test') {
 			steps {
 				echo 'Acceptance test'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
-                        sh 'test $(docker wait acceptance_test_1) -eq 0'
-                        // sleep 10
-                        // sh './acceptance_test.sh'
+                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+                        // sh 'test $(docker wait acceptance_test_1) -eq 0'
+                        sleep 10
+                        sh './acceptance_test.sh'
                         // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance up -d --build'
                     }
                 }

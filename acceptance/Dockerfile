@@ -2,8 +2,7 @@ FROM debian:stretch-slim
 
 LABEL maintainer="Kevin Edwards <kedwards@kevinedwards.ca>"
 
-RUN apt-get update && \
-    apt-get install -yq curl
+RUN apt-get update && apt-get --no-install-recommends install -yq curl
 
 COPY test.sh .
 
