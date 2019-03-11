@@ -75,28 +75,28 @@ pipeline {
                 }
             }
         }
-        stage('Deploy and Acceptance test') {
-            steps {
-                echo 'Deploy and Acceptance test'
-                script {
-                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        sh "docker-compose -f docker-compose.yml -p acceptance up -d"
-                        // sh 'test $(docker wait acceptance_test_1) -eq 0'
-                        sh 'test 0 -eq 0'
-                    }
-                }
-            }
-        }
+        // stage('Deploy and Acceptance test') {
+        //     steps {
+        //         echo 'Deploy and Acceptance test'
+        //         script {
+        //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+        //                 sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+        //                 sh "docker-compose -f docker-compose.yml -p acceptance up -d"
+        //                 // sh 'test $(docker wait acceptance_test_1) -eq 0'
+        //                 sh 'test 0 -eq 0'
+        //             }
+        //         }
+        //     }
+        // }
     }   
     post {
         always {
             echo 'Always send this message'
-            script {
-                docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                    sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
-                } 
-            }
+            // script {
+            //     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+            //         sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down'
+            //     } 
+            // }
         }     
     }
 }
