@@ -3,6 +3,7 @@ HELP.md
 ###/build/
 build/*
 !gradle/wrapper/gradle-wrapper.jar
+bin/
 
 ### STS ###
 .apt_generated

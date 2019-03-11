@@ -4,6 +4,7 @@ pipeline {
         DOCKER_IMAGE = 'kevinedwards/calculator'
         GITHUB_IMAGE = 'kedwards/calculator'
         CONTAINER_NAME = 'calculator'
+        DOCKER_SERVER = '35.182.66.188:2376'
         DOCKER_HUB_CREDENTIAL_ID = '015cdcef-f928-4288-9ccd-7f91f75d2178'
     }
     triggers {
@@ -36,13 +37,13 @@ pipeline {
         stage('Code coverage') {
             steps {
                 echo 'Code coverage'
-                sh './gradlew jacocoTestCoverageVerification'
+                sh './gradlew jacocoTestReport'
                 publishHTML (target: [
                     reportDir: 'build/reports/jacoco/test/html',
                     reportFiles: 'index.html',
                     reportName: 'JaCoCo Report'
                 ])
-                sh './gradlew jacocoTestReport'
+                sh './gradlew jacocoTestCoverageVerification'
             }
         }
         stage('Package') {
@@ -55,7 +56,7 @@ pipeline {
             steps {
                 echo 'Docker build'
                 script {
-                    docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         app = docker.build("${DOCKER_IMAGE}") 
                     }
                 }
@@ -65,7 +66,7 @@ pipeline {
             steps {
                 echo 'Docker Publish'
                 script {
-                    docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
                             app.push("${env.BUILD_NUMBER}")
                             app.push("latest")
@@ -78,9 +79,9 @@ pipeline {
             steps {
                 echo 'Deploy to staging'
                 script {
-                    docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        sh "docker run -itd -p 8765:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
-                        sh 'docker-compose up -d'
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        sh "docker run -itd -p 8765:8080 --rm --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                        // sh 'docker-compose up -d'
                     }
                 }
             }
@@ -89,10 +90,10 @@ pipeline {
 			steps {
 				echo 'Acceptance test'
                 script {
-                    docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
-                        sh 'test $(docker wait acceptance_test_1) -eq 0'
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+                        // sh 'test $(docker wait acceptance_test_1) -eq 0'
                         sleep 60
                         sh './acceptance_test.sh'
                     }
@@ -104,9 +105,9 @@ pipeline {
         always {
             echo 'Always send this message'
             script {
-                docker.withServer('tcp://35.182.66.188:2376', '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                     sh "docker stop ${CONTAINER_NAME}"
-                    sh 'docker-compose down'
+                    // sh 'docker-compose down'
 			        // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance down'
                 } 
             }

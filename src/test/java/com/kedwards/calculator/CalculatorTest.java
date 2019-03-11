@@ -3,7 +3,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Main Test Application.
+ * Main Spring Application Test.
  */
 public class CalculatorTest {
      private Calculator calculator = new Calculator();
