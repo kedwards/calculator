@@ -46,35 +46,35 @@ pipeline {
         //         sh './gradlew jacocoTestCoverageVerification'
         //     }
         // }
-        // stage('Package') {
-        //     steps {
-        //         echo 'Package'
-        //         sh './gradlew build'
-        //     }
-        // }
-        // stage('Docker build') {
-        //     steps {
-        //         echo 'Docker build'
-        //         script {
-        //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-        //                 app = docker.build("${DOCKER_IMAGE}") 
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Docker push') {
-        //     steps {
-        //         echo 'Docker Publish'
-        //         script {
-        //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-        //                 docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
-        //                     app.push("${env.BUILD_NUMBER}")
-        //                     app.push("latest")
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Package') {
+            steps {
+                echo 'Package'
+                sh './gradlew build'
+            }
+        }
+        stage('Docker build') {
+            steps {
+                echo 'Docker build'
+                script {
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        app = docker.build("${DOCKER_IMAGE}") 
+                    }
+                }
+            }
+        }
+        stage('Docker push') {
+            steps {
+                echo 'Docker Publish'
+                script {
+                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+                        docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
+                            app.push("${env.BUILD_NUMBER}")
+                            app.push("latest")
+                        }
+                    }
+                }
+            }
+        }
         // stage('Deploy to staging') {
         //     steps {
         //         echo 'Deploy to staging'
