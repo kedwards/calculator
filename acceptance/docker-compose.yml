@@ -3,6 +3,6 @@ services:
     test:
         build: ./acceptance
         networks:
-            - calculator
+            - acceptance_calculator
 networks:
-    calculator:
+    acceptance_calculator:
