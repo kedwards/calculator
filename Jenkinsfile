@@ -91,9 +91,9 @@ pipeline {
 				echo 'Acceptance test'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        // sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
-                        // sh 'test $(docker wait acceptance_test_1) -eq 0'
+                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+                        sh 'test $(docker wait acceptance_test_1) -eq 0'
                         // sleep 10
                         // sh './acceptance_test.sh'
                         // sh 'docker-compose -f docker-compose.yml -f acceptance/docker-compose-acceptance.yml -p acceptance up -d --build'
