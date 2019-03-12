@@ -28,6 +28,10 @@ dependencies {
 	// Redis client library
 	compile "org.springframework.data:spring-data-redis:1.8.0.RELEASE"
 	compile "redis.clients:jedis:2.9.0"
+
+	// Java cucumber libraries
+	testCompile("info.cukes:cucumber-java:1.2.4")
+    testCompile("info.cukes:cucumber-junit:1.2.4")
 }
 
 // jacoco for test coverage analysis, others Clover, and Cobertura
@@ -45,3 +49,16 @@ jacocoTestCoverageVerification {
 
 // checkstyle for static analysis on the Java code, others FindBugs, and PMD
 apply plugin: 'checkstyle'
+
+// Gradle cucumber acceptance, This splits the tests into:
+// unit (run with ./gradlew test) 
+// and
+// acceptance (run with ./gradlew acceptanceTest)
+task acceptanceTest(type: Test) {
+    include '**/acceptance/**'
+    systemProperties System.getProperties()
+}
+
+test {
+    exclude '**/acceptance/**'
+}
