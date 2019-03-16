@@ -62,3 +62,9 @@ task acceptanceTest(type: Test) {
 test {
     exclude '**/acceptance/**'
 }
+
+// make the build JAR executable, so that it can be easily run on the
+// server as a Unix service
+bootRepackage {
+    executable = true
+}

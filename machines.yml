@@ -1,0 +1,34 @@
+---
+- type: "aws"
+  enabled: true
+  sync_disabled: true
+  box: "aws-dummy"
+  keypair_name: "kedwards_keca"
+  instance_type: "t2.micro"
+  region: "ca-central-1"
+  subnet_id: "subnet-050e2d2e8c3ce2d92"
+  ip_addr: true
+  ami: "ami-01872e06509e14f77" # ca-central
+  private_key_path: "~/.ssh/kedwards_keca.pem"
+  tags:
+    name: "calc-prod"
+    team: "devops"
+  security_group: "sg-036a315514f2508f9"
+  name: "calc-prod"
+
+- type: "aws"
+  enabled: true
+  sync_disabled: true
+  box: "aws-dummy"
+  keypair_name: "kedwards_keca"
+  instance_type: "t2.micro"
+  region: "ca-central-1"
+  subnet_id: "subnet-050e2d2e8c3ce2d92"
+  ip_addr: true
+  ami: "ami-01872e06509e14f77" # ca-central
+  private_key_path: "~/.ssh/kedwards_keca.pem"
+  tags:
+    name: "calc-stage"
+    team: "devops"
+  security_group: "sg-036a315514f2508f9"
+  name: "calc-stage"

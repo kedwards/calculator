@@ -13,13 +13,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checkout'
                 git url: "https://github.com/${GITHUB_IMAGE}"
             }
         }
         stage('Static code analysis') {
             steps {
-                echo 'Static code analysis'
                 sh './gradlew checkstyleMain'
                 publishHTML (target: [
                     reportDir: 'build/reports/checkstyle/',
@@ -30,13 +28,16 @@ pipeline {
         }
         stage('Compile') {
             steps {
-                echo 'Compile'
                 sh './gradlew compileJava'
+            }
+        }
+        stage("Unit test") {
+            steps { 
+                sh "./gradlew test"
             }
         }
         stage('Code coverage') {
             steps {
-                echo 'Code coverage'
                 sh './gradlew jacocoTestReport'
                 publishHTML (target: [
                     reportDir: 'build/reports/jacoco/test/html',
@@ -48,13 +49,11 @@ pipeline {
         }
         stage('Package') {
             steps {
-                echo 'Package'
                 sh './gradlew build'
             }
         }
         stage('Docker build') {
             steps {
-                echo 'Docker build'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         app = docker.build("${DOCKER_IMAGE}") 
@@ -64,39 +63,60 @@ pipeline {
         }
         stage('Docker push') {
             steps {
-                echo 'Docker Publish'
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
-                            app.push("${env.BUILD_NUMBER}")
-                            app.push("latest")
+                            app.push("${BUILD_TIMESTAMP}")
                         }
                     }
                 }
             }
         }
-        stage('Deploy and Acceptance test') {
+        // stage('Deploy and Acceptance test') {
+        //     steps {
+        //         script {
+        //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+        //                 sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
+        //                 sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
+        //                 sh 'test $(docker wait acceptance_test_1) -eq 0'
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Deploy to Staging') {
             steps {
-                echo 'Deploy and Acceptance test'
-                script {
-                    docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml build test"
-                        sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance up -d"
-                        sh 'test $(docker wait acceptance_test_1) -eq 0'
-                    }
-                }
+                sh "ansible-playbook playbook.yml -i inventory --limit=calc-stage"
+                sleep 30
             }
         }
-    }   
-    post {
-        always {
-            echo 'Always send this message'
-            script {
-                docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
-                    sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down"
-                } 
+
+        // Performance test stages
+
+        stage("Acceptance test") {
+            steps {
+                sh "./acceptance_test.sh"
             }
-        }     
-    }
+        }  
+        stage('Deploy to Production') {
+            steps {
+                sh "ansible-playbook playbook.yml -i inventory --limit=calc-prod"
+                sleep 30
+            }
+        }
+        stage("Smoke test") { 
+            steps { 
+                sh "./smoke_test.sh"
+            } 
+        }
+    }   
+    // post {
+    //     always {
+    //         script {
+    //             docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
+    //                 sh "docker-compose -f docker-compose.yml -f acceptance/docker-compose.yml -p acceptance down"
+    //             } 
+    //         }
+    //     }     
+    // }
 }
 
