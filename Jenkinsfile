@@ -66,7 +66,8 @@ pipeline {
                 script {
                     docker.withServer("tcp://${DOCKER_SERVER}", '16a780ab-6713-4daa-8684-11f54eeab3b1') {
                         docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIAL_ID}") {
-                            app.push("${BUILD_TIMESTAMP}")
+                            // app.push("${BUILD_TIMESTAMP}")
+                            app.push("${env.BUILD_NUMBER}")
                         }
                     }
                 }
@@ -119,4 +120,3 @@ pipeline {
     //     }     
     // }
 }
-
