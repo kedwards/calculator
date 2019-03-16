@@ -1,6 +1,13 @@
 ---
 - hosts: all
+  become: true
   tasks:
+    - name: Install packages
+      apt:
+        name: dirmngr
+        force_apt_get: yes
+        update_cache: yes  
+        state: latest           
     - name: add docker apt keys
       apt_key:
         keyserver: hkp://p80.pool.sks-keyservers.net:80
